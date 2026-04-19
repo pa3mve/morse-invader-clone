@@ -48,6 +48,64 @@ export class Renderer {
     }
   }
 
+  // Draw a rounded rectangle path
+  drawRoundedRect(x, y, width, height, radius = 8) {
+    const ctx = this.ctx;
+    const r = Math.min(radius, width / 2, height / 2);
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.lineTo(x + width - r, y);
+    ctx.arcTo(x + width, y, x + width, y + r, r);
+    ctx.lineTo(x + width, y + height - r);
+    ctx.arcTo(x + width, y + height, x + width - r, y + height, r);
+    ctx.lineTo(x + r, y + height);
+    ctx.arcTo(x, y + height, x, y + height - r, r);
+    ctx.lineTo(x, y + r);
+    ctx.arcTo(x, y, x + r, y, r);
+    ctx.closePath();
+  }
+
+  // Draw a styled button (rounded rect + text)
+  drawButton(x, y, width, height, text, opts = {}) {
+    const ctx = this.ctx;
+    const {
+      fill = '#333333',
+      stroke = null,
+      textColor = '#ffffff',
+      font = 'bold 18px monospace',
+      radius = 8,
+      shadow = false
+    } = opts;
+
+    ctx.save();
+    if (shadow) {
+      ctx.shadowColor = 'rgba(0,0,0,0.5)';
+      ctx.shadowBlur = 12;
+      ctx.shadowOffsetY = 4;
+    }
+
+    ctx.fillStyle = fill;
+    this.drawRoundedRect(x, y, width, height, radius);
+    ctx.fill();
+
+    if (stroke) {
+      ctx.strokeStyle = stroke;
+      ctx.lineWidth = 2;
+      this.drawRoundedRect(x, y, width, height, radius);
+      ctx.stroke();
+    }
+
+    ctx.shadowBlur = 0;
+    ctx.shadowOffsetY = 0;
+
+    ctx.fillStyle = textColor;
+    ctx.font = font;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(text, x + width / 2, y + height / 2);
+    ctx.restore();
+  }
+
   // Draw an invader
   drawInvader(invader, showMorse = true) {
     if (invader.isDestroyed) return;
@@ -279,12 +337,13 @@ export class Renderer {
 
     // Character selection grid - A-Z + 0-9 + punctuation
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,?=';
-    const btnWidth = 24;
-    const btnHeight = 18;
-    const btnSpacing = 3;
-    const cols = 19;
+    // Optimized button sizes for clean layout
+    const btnWidth = 36;
+    const btnHeight = 28;
+    const btnSpacing = 4;
+    const cols = 14; // Better fit for 800px width
     const startX = (this.width - (cols * (btnWidth + btnSpacing) - btnSpacing)) / 2;
-    const gridY = 165;
+    const gridY = 158;
 
     for (let i = 0; i < chars.length; i++) {
       const col = i % cols;
@@ -301,108 +360,139 @@ export class Renderer {
         height: btnHeight,
         selected: isSelected
       });
-
-      // Draw button
+      // Draw styled button
       if (isSelected) {
-        this.ctx.fillStyle = '#0077cc';
-        this.ctx.fillRect(x, y, btnWidth, btnHeight);
-        this.ctx.fillStyle = '#000000';
+        this.drawButton(x, y, btnWidth, btnHeight, chars[i], {
+          fill: '#0077cc',
+          stroke: '#00497a',
+          textColor: '#000000',
+          font: 'bold 20px monospace',
+          radius: 6,
+          shadow: false
+        });
       } else {
-        this.ctx.fillStyle = '#333333';
-        this.ctx.fillRect(x, y, btnWidth, btnHeight);
-        this.ctx.strokeStyle = '#666666';
-        this.ctx.strokeRect(x, y, btnWidth, btnHeight);
-        this.ctx.fillStyle = '#888888';
+        this.drawButton(x, y, btnWidth, btnHeight, chars[i], {
+          fill: '#222831',
+          stroke: '#444',
+          textColor: '#bfc7cc',
+          font: 'bold 20px monospace',
+          radius: 6,
+          shadow: false
+        });
       }
-
-      this.ctx.font = 'bold 14px monospace';
-      this.ctx.textAlign = 'center';
-      this.ctx.fillText(chars[i], x + btnWidth / 2, y + btnHeight / 2 + 5);
     }
 
-    // WPM control
-    const wpmY = 270;
+    // WPM control - place below the character grid to avoid overlap
+    const colsUsed = cols;
+    const rowsUsed = Math.ceil(chars.length / colsUsed);
+    const gridHeight = rowsUsed * (btnHeight + btnSpacing) - btnSpacing;
+    const bottomOfGrid = gridY + gridHeight;
+    const paddingAfterGrid = 18;
+    const wpmY = bottomOfGrid + paddingAfterGrid;
     this.ctx.fillStyle = '#ffffff';
     this.ctx.font = '16px monospace';
     this.ctx.textAlign = 'center';
     this.ctx.fillText('SPEED', this.width / 2, wpmY);
 
     const wpmBoxY = wpmY + 15;
-    const wpmBoxWidth = 100;
-    const wpmBoxHeight = 35;
+    const wpmBoxWidth = 140;
+    const wpmBoxHeight = 48;
     const wpmBoxX = this.width / 2 - wpmBoxWidth / 2;
 
     // WPM buttons
-    const upBtnX = wpmBoxX + wpmBoxWidth + 10;
-    const downBtnX = wpmBoxX - 40;
-    const btnSize = 30;
+    const btnSize = 44;
+    const upBtnX = wpmBoxX + wpmBoxWidth + 12;
+    const downBtnX = wpmBoxX - btnSize - 12;
 
     // Up button
     this.wpmButtons.up = { x: upBtnX, y: wpmBoxY, width: btnSize, height: btnSize };
-    this.ctx.fillStyle = '#1a2a38';
-    this.ctx.fillRect(upBtnX, wpmBoxY, btnSize, btnSize);
-    this.ctx.strokeStyle = '#666666';
-    this.ctx.strokeRect(upBtnX, wpmBoxY, btnSize, btnSize);
-    this.ctx.fillStyle = '#0077cc';
-    this.ctx.font = 'bold 20px monospace';
-    this.ctx.fillText('▲', upBtnX + btnSize / 2, wpmBoxY + btnSize / 2 + 7);
+    this.drawButton(upBtnX, wpmBoxY, btnSize, btnSize, '▲', {
+      fill: '#1a2a38',
+      stroke: '#666666',
+      textColor: '#00a3ff',
+      font: 'bold 28px monospace',
+      radius: 8,
+      shadow: false
+    });
 
     // Down button
     this.wpmButtons.down = { x: downBtnX, y: wpmBoxY, width: btnSize, height: btnSize };
-    this.ctx.fillStyle = '#1a2a38';
-    this.ctx.fillRect(downBtnX, wpmBoxY, btnSize, btnSize);
-    this.ctx.strokeStyle = '#666666';
-    this.ctx.strokeRect(downBtnX, wpmBoxY, btnSize, btnSize);
-    this.ctx.fillStyle = '#0077cc';
-    this.ctx.fillText('▼', downBtnX + btnSize / 2, wpmBoxY + btnSize / 2 + 7);
+    this.drawButton(downBtnX, wpmBoxY, btnSize, btnSize, '▼', {
+      fill: '#1a2a38',
+      stroke: '#666666',
+      textColor: '#00a3ff',
+      font: 'bold 28px monospace',
+      radius: 8,
+      shadow: false
+    });
 
     // WPM display box
+    // WPM display box
     this.ctx.fillStyle = '#081421';
-    this.ctx.fillRect(wpmBoxX, wpmBoxY, wpmBoxWidth, wpmBoxHeight);
+    this.drawRoundedRect(wpmBoxX, wpmBoxY, wpmBoxWidth, wpmBoxHeight, 10);
+    this.ctx.fill();
     this.ctx.strokeStyle = '#0077cc';
-    this.ctx.strokeRect(wpmBoxX, wpmBoxY, wpmBoxWidth, wpmBoxHeight);
+    this.ctx.lineWidth = 2;
+    this.drawRoundedRect(wpmBoxX, wpmBoxY, wpmBoxWidth, wpmBoxHeight, 10);
+    this.ctx.stroke();
     this.ctx.fillStyle = '#ff6666';
-    this.ctx.font = 'bold 20px monospace';
-    this.ctx.fillText(`${wpm} WPM`, this.width / 2, wpmBoxY + wpmBoxHeight / 2 + 7);
+    this.ctx.font = 'bold 26px monospace';
+    this.ctx.textAlign = 'center';
+    this.ctx.fillText(`${wpm} WPM`, this.width / 2, wpmBoxY + wpmBoxHeight / 2);
 
+    // Toggle buttons in a cleaner layout
+    const toggleY = wpmBoxY + wpmBoxHeight + 20;
+    const toggleSpacing = 8;
+    const toggleWidth = 110;
+    const toggleHeight = 42;
+    
     // Audio toggle
-    const audioY = 330;
-    this.audioButton = { x: this.width / 2 - 60, y: audioY, width: 120, height: 35 };
-    this.ctx.fillStyle = audioEnabled ? '#0077cc' : '#ff4444';
-    this.ctx.fillRect(this.audioButton.x, this.audioButton.y, this.audioButton.width, this.audioButton.height);
-    this.ctx.fillStyle = audioEnabled ? '#000000' : '#ffffff';
-    this.ctx.font = 'bold 16px monospace';
-    this.ctx.fillText(`Audio ${audioEnabled ? 'ON' : 'OFF'}`, this.width / 2, audioY + 23);
+    const audioX = this.width / 2 - (toggleWidth * 1.5) - toggleSpacing;
+    this.audioButton = { x: audioX, y: toggleY, width: toggleWidth, height: toggleHeight };
+    this.drawButton(this.audioButton.x, this.audioButton.y, this.audioButton.width, this.audioButton.height, `Audio ${audioEnabled ? 'ON' : 'OFF'}`, {
+      fill: audioEnabled ? '#0077cc' : '#444444',
+      stroke: audioEnabled ? '#005999' : '#666666',
+      textColor: audioEnabled ? '#ffffff' : '#cccccc',
+      font: 'bold 16px monospace',
+      radius: 8,
+      shadow: false
+    });
+
+    // Morse display toggle
+    const morseX = this.width / 2 - toggleWidth / 2;
+    this.morseButton = { x: morseX, y: toggleY, width: toggleWidth, height: toggleHeight };
+    this.drawButton(this.morseButton.x, this.morseButton.y, this.morseButton.width, this.morseButton.height, `Morse ${showMorseCode ? 'ON' : 'OFF'}`, {
+      fill: showMorseCode ? '#0077cc' : '#444444',
+      stroke: showMorseCode ? '#005999' : '#666666',
+      textColor: showMorseCode ? '#ffffff' : '#cccccc',
+      font: 'bold 16px monospace',
+      radius: 8,
+      shadow: false
+    });
 
     // Word Mode toggle
-    // Morse Code display toggle
-    const morseY = audioY + 45;
-    this.morseButton = { x: this.width / 2 - 60, y: morseY, width: 120, height: 35 };
-    this.ctx.fillStyle = showMorseCode ? '#0077cc' : '#ff4444';
-    this.ctx.fillRect(this.morseButton.x, this.morseButton.y, this.morseButton.width, this.morseButton.height);
-    this.ctx.fillStyle = showMorseCode ? '#000000' : '#ffffff';
-    this.ctx.font = 'bold 14px monospace';
-    this.ctx.fillText(`Morse ${showMorseCode ? 'ON' : 'OFF'}`, this.width / 2, morseY + 23);
-
-    // Word Mode button (now below Morse toggle)
-    const wordModeY = morseY + 45;
-    this.wordModeButton = { x: this.width / 2 - 60, y: wordModeY, width: 120, height: 35 };
-    this.ctx.fillStyle = wordMode ? '#00ff00' : '#333333';
-    this.ctx.fillRect(this.wordModeButton.x, this.wordModeButton.y, this.wordModeButton.width, this.wordModeButton.height);
-    this.ctx.strokeStyle = '#00ff00';
-    this.ctx.strokeRect(this.wordModeButton.x, this.wordModeButton.y, this.wordModeButton.width, this.wordModeButton.height);
-    this.ctx.fillStyle = wordMode ? '#000000' : '#ffffff';
-    this.ctx.font = 'bold 16px monospace';
-    this.ctx.fillText(`Word Mode: ${wordMode ? 'ON' : 'OFF'}`, this.width / 2, wordModeY + 23);
+    const wordModeX = this.width / 2 + toggleWidth / 2 + toggleSpacing;
+    this.wordModeButton = { x: wordModeX, y: toggleY, width: toggleWidth, height: toggleHeight };
+    this.drawButton(this.wordModeButton.x, this.wordModeButton.y, this.wordModeButton.width, this.wordModeButton.height, `Word ${wordMode ? 'ON' : 'OFF'}`, {
+      fill: wordMode ? '#00aa00' : '#444444',
+      stroke: wordMode ? '#007700' : '#666666',
+      textColor: '#ffffff',
+      font: 'bold 16px monospace',
+      radius: 8,
+      shadow: false
+    });
 
     // Start button
-    const startY = wordModeY + 50;
-    this.startButton = { x: this.width / 2 - 100, y: startY, width: 200, height: 45 };
-    this.ctx.fillStyle = '#cc2020';
-    this.ctx.fillRect(this.startButton.x, this.startButton.y, this.startButton.width, this.startButton.height);
-    this.ctx.fillStyle = '#ffffff';
-    this.ctx.font = 'bold 20px monospace';
-    this.ctx.fillText('START GAME', this.width / 2, startY + 30);
+    const startY = toggleY + toggleHeight + 20;
+    this.startButton = { x: this.width / 2 - 120, y: startY, width: 240, height: 50 };
+    this.drawButton(this.startButton.x, this.startButton.y, this.startButton.width, this.startButton.height, '🚀 START GAME', {
+      fill: '#cc2020',
+      stroke: '#8b1414',
+      textColor: '#ffffff',
+      font: 'bold 24px monospace',
+      radius: 12,
+      shadow: true
+    });
   }
 
   // Draw game over screen

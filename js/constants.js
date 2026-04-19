@@ -121,4 +121,7 @@ export const PLAYER_SPRITE = [
 ];
 
 // Default learned characters
-export const DEFAULT_LEARNED_CHARS = ['A', 'E', 'T', 'M', 'O', 'N', 'I', 'S', 'H', 'R'];
+export const DEFAULT_LEARNED_CHARS = [
+  'A','B','C','D','E','F','G','H','I','J','K','L','M',
+  'N','O','P','Q','R','S','T','U','V','W','X','Y','Z'
+];

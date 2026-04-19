@@ -202,6 +202,8 @@ export class GameLoop {
           if (this.game && this.game.wordMode && invader && invader.word) {
             const typed = this.game.typedBuffer || '';
             if (typed !== invader.word) {
+              // Deduct 10 points for missed/incorrect word
+              this.game.score = Math.max(0, this.game.score - 10);
               // Clear typed buffer and move to another invader from the lowest row
               this.game.typedBuffer = '';
               this.audioEngine.stopAll();

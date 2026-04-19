@@ -11,6 +11,9 @@
       padding: 0;
       box-sizing: border-box;
     }
+    html,body {
+      height: 100%;
+    }
     body {
       background-color: #001022;
       display: flex;
@@ -18,20 +21,82 @@
       align-items: center;
       min-height: 100vh;
       font-family: monospace;
+      color: #bfe6ff;
     }
+
+    .game-wrap {
+      display: flex;
+      gap: 24px;
+      align-items: flex-start;
+      width: 1920px; /* keep a little room for the side panel */
+      max-width: calc(100% - 40px);
+    }
+
     #gameCanvas {
       border: 2px solid #cc2020;
       box-shadow: 0 0 20px rgba(204, 32, 32, 0.25);
+      background: #000;
+      width: 800px;
+      height: 600px;
+      display: block;
     }
+
+    .panel {
+      width: 460px;
+      background: linear-gradient(180deg,#021426,#04182a);
+      border-radius: 10px;
+      padding: 16px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.5);
+    }
+
+    .panel h2 { font-size: 22px; margin-bottom: 12px; color:#ffccaa; text-align: center }
+    .panel h3 { font-size: 16px; margin-bottom: 8px; color:#00a3ff; border-bottom: 1px solid #234; padding-bottom: 4px }
+    .panel p { font-size: 13px; color:#bfe6ff; margin-bottom: 6px; line-height:1.4 }
+    .panel .muted { color:#7f9aa8; font-size:12px }
+    .section { margin-top: 16px; padding: 8px 0 }
+    .control-row { margin-top:12px; padding: 8px 0 }
+    .control-row input[type="text"]{ width:100%; font-size:14px; padding:10px; border-radius:8px; border:1px solid #23455f; background:#011126; color:#bfe6ff; margin-top: 6px }
+    .control-row button{ margin-top:10px; width:100%; padding:10px; font-size:15px; border-radius:8px; border:none; background:#cc2020; color:#fff; cursor:pointer; transition: background 0.2s }
+    .control-row button:hover{ background:#e02525 }
   </style>
 </head>
 <body>
-  <div style="position:absolute;top:30px;left:50%;transform:translateX(-50%);z-index:10;text-align:center;">
-    <input id="customWordsInput" type="text" placeholder="Paste or type words here..." style="width:400px;font-size:16px;padding:6px 10px;border:1px solid #335b86;background:#011126;color:#bfe6ff;outline:none;border-radius:4px;">
-    <button id="addWordsBtn" style="font-size:16px;padding:6px 12px;margin-left:8px;background:#cc2020;color:#fff;border:none;cursor:pointer;border-radius:4px;">Add Words</button>
-    <div id="addWordsMsg" style="color:#bfe6ff;font-size:14px;margin-top:6px;min-height:18px;"></div>
+  <div class="game-wrap">
+    <canvas id="gameCanvas" width="800" height="600"></canvas>
+
+    <aside class="panel" aria-label="Game instructions and settings">
+      <h2>🎯 Morse Invaders</h2>
+      <p><strong>Mission:</strong> Shoot descending invaders by typing Morse code before they reach Earth!</p>
+      
+      <div class="section">
+        <h3>🎮 How to Play</h3>
+        <p>• Only the <span style="color:#ff6666">red invader</span> is active and sends Morse code</p>
+        <p>• Press <strong>ESC</strong> anytime to return to menu</p>
+      </div>
+
+      <div class="section">
+        <h3>⚙️ Game Modes</h3>
+        <p><strong>Letter Mode:</strong> Learn individual letters A-Z, 0-9</p>
+        <p><strong>Word Mode:</strong> Practice with full words - each invader spells out one complete word in Morse code</p>
+        <p>You can start typing as soon as the word ends</p>
+      </div>
+
+      <div class="control-row">
+        <h3>📝 Custom Words</h3>
+        <input id="customWordsInput" type="text" placeholder="HELLO, WORLD, RADIO" />
+        <button id="addWordsBtn">Replace Word List</button>
+        <div id="addWordsMsg" style="min-height:18px;margin-top:6px;color:#bfe6ff"></div>
+      </div>
+
+      <!-- <div class="section">
+        <h3>🔧 Menu Settings</h3>
+        <p>• <strong>Character Grid:</strong> Click letters to practice</p>
+        <p>• <strong>Speed (WPM):</strong> Adjust Morse timing</p>
+        <p>• <strong>Audio:</strong> Enable/disable sound effects</p>
+        <p>• <strong>Morse Display:</strong> Show/hide dots and dashes</p>
+      </div> -->
+    </aside>
   </div>
-  <canvas id="gameCanvas" width="800" height="600"></canvas>
   <script type="module" src="js/main.js"></script>
 </body>
 </html>
