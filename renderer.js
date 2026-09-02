@@ -372,7 +372,7 @@ export class Renderer {
     this.ctx.fillRect(this.audioButton.x, this.audioButton.y, this.audioButton.width, this.audioButton.height);
     this.ctx.fillStyle = audioEnabled ? '#000000' : '#ffffff';
     this.ctx.font = 'bold 16px monospace';
-    this.ctx.fillText(`Audio ${audioEnabled ? 'ON' : 'OFF'}`, this.width / 2, audioY + 23);
+    this.ctx.fillText(`Audio ${audioEnabled ? 'AAN' : 'UIT'}`, this.width / 2, audioY + 23);
 
     // Word Mode toggle
     // Morse Code display toggle
@@ -382,7 +382,7 @@ export class Renderer {
     this.ctx.fillRect(this.morseButton.x, this.morseButton.y, this.morseButton.width, this.morseButton.height);
     this.ctx.fillStyle = showMorseCode ? '#000000' : '#ffffff';
     this.ctx.font = 'bold 14px monospace';
-    this.ctx.fillText(`Morse ${showMorseCode ? 'ON' : 'OFF'}`, this.width / 2, morseY + 23);
+    this.ctx.fillText(`Morse ${showMorseCode ? 'AAN' : 'UIT'}`, this.width / 2, morseY + 23);
 
     // Word Mode button (now below Morse toggle)
     const wordModeY = morseY + 45;
@@ -393,7 +393,7 @@ export class Renderer {
     this.ctx.strokeRect(this.wordModeButton.x, this.wordModeButton.y, this.wordModeButton.width, this.wordModeButton.height);
     this.ctx.fillStyle = wordMode ? '#000000' : '#ffffff';
     this.ctx.font = 'bold 16px monospace';
-    this.ctx.fillText(`Word Mode: ${wordMode ? 'ON' : 'OFF'}`, this.width / 2, wordModeY + 23);
+    this.ctx.fillText(`Woordmodus: ${wordMode ? 'AAN' : 'UIT'}`, this.width / 2, wordModeY + 23);
 
     // Start button
     const startY = wordModeY + 50;
@@ -402,7 +402,7 @@ export class Renderer {
     this.ctx.fillRect(this.startButton.x, this.startButton.y, this.startButton.width, this.startButton.height);
     this.ctx.fillStyle = '#ffffff';
     this.ctx.font = 'bold 20px monospace';
-    this.ctx.fillText('START GAME', this.width / 2, startY + 30);
+    this.ctx.fillText('START SPEL', this.width / 2, startY + 30);
   }
 
   // Draw game over screen
