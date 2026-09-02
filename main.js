@@ -81,7 +81,7 @@ async function init() {
     btn.onclick = () => {
       let text = input.value.trim();
       if (!text) {
-        msg.textContent = 'Paste or type some words.';
+        msg.textContent = 'Plak of typ enkele woorden.';
         return;
       }
       // Remove punctuation, split by whitespace, filter out empty, deduplicate
@@ -92,7 +92,7 @@ async function init() {
         .filter(w => w.length >= 1);
       words = Array.from(new Set(words));
       if (words.length === 0) {
-        msg.textContent = 'No valid words parsed.';
+        msg.textContent = 'Geen geldige woorden gevonden.';
         return;
       }
       // Replace DEFAULT_WORD_LIST contents with new words
@@ -100,7 +100,7 @@ async function init() {
       for (const w of words) DEFAULT_WORD_LIST.push(w);
       shuffleArray(DEFAULT_WORD_LIST);
       localStorage.setItem('morseInvaderCustomWords', JSON.stringify(DEFAULT_WORD_LIST));
-      msg.textContent = `Word list replaced with ${words.length} word${words.length === 1 ? '' : 's'}.`;
+      msg.textContent = `Woordenlijst vervangen door ${words.length} woord${words.length === 1 ? '' : 'en'}.`;
       input.value = '';
     };
   }

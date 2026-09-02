@@ -287,8 +287,8 @@ export class Renderer {
     this.ctx.font = '16px monospace';
     this.ctx.textAlign = 'left';
     this.ctx.fillText(`SCORE: ${score}`, 20, 30);
-    this.ctx.fillText(`LEVEL: ${level}`, 20, 50);
-    this.ctx.fillText(`LIVES: ${'♥'.repeat(lives)}`, 20, 70);
+    this.ctx.fillText(`NIVEAU: ${level}`, 20, 50);
+    this.ctx.fillText(`LEVENS: ${'♥'.repeat(lives)}`, 20, 70);
 
     this.ctx.textAlign = 'right';
     this.ctx.fillText(`WPM: ${wpm}`, this.width - 20, 30);
@@ -328,12 +328,12 @@ export class Renderer {
     // Subtitle
     this.ctx.fillStyle = '#8aa3b8';
     this.ctx.font = '14px monospace';
-    this.ctx.fillText('Click letters/numbers to select learned characters', this.width / 2, 130);
+    this.ctx.fillText('Klik op letters/cijfers om geleerde tekens te selecteren', this.width / 2, 130);
 
     // Instructions
     this.ctx.fillStyle = '#6b7f8f';
     this.ctx.font = '12px monospace';
-    this.ctx.fillText('Type the letter shown below the invader to shoot. ESC to end game.', this.width / 2, 145);
+    this.ctx.fillText('Typ de letter die onder de indringer wordt getoond om te schieten. ESC om te stoppen.', this.width / 2, 145);
 
     // Character selection grid - A-Z + 0-9 + punctuation
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,?=';
@@ -392,7 +392,7 @@ export class Renderer {
     this.ctx.fillStyle = '#ffffff';
     this.ctx.font = '16px monospace';
     this.ctx.textAlign = 'center';
-    this.ctx.fillText('SPEED', this.width / 2, wpmY);
+    this.ctx.fillText('SNELHEID', this.width / 2, wpmY);
 
     const wpmBoxY = wpmY + 15;
     const wpmBoxWidth = 140;
@@ -449,7 +449,7 @@ export class Renderer {
     // Audio toggle
     const audioX = this.width / 2 - (toggleWidth * 1.5) - toggleSpacing;
     this.audioButton = { x: audioX, y: toggleY, width: toggleWidth, height: toggleHeight };
-    this.drawButton(this.audioButton.x, this.audioButton.y, this.audioButton.width, this.audioButton.height, `Audio ${audioEnabled ? 'ON' : 'OFF'}`, {
+    this.drawButton(this.audioButton.x, this.audioButton.y, this.audioButton.width, this.audioButton.height, `Audio ${audioEnabled ? 'AAN' : 'UIT'}`, {
       fill: audioEnabled ? '#0077cc' : '#444444',
       stroke: audioEnabled ? '#005999' : '#666666',
       textColor: audioEnabled ? '#ffffff' : '#cccccc',
@@ -461,7 +461,7 @@ export class Renderer {
     // Morse display toggle
     const morseX = this.width / 2 - toggleWidth / 2;
     this.morseButton = { x: morseX, y: toggleY, width: toggleWidth, height: toggleHeight };
-    this.drawButton(this.morseButton.x, this.morseButton.y, this.morseButton.width, this.morseButton.height, `Morse ${showMorseCode ? 'ON' : 'OFF'}`, {
+    this.drawButton(this.morseButton.x, this.morseButton.y, this.morseButton.width, this.morseButton.height, `Morse ${showMorseCode ? 'AAN' : 'UIT'}`, {
       fill: showMorseCode ? '#0077cc' : '#444444',
       stroke: showMorseCode ? '#005999' : '#666666',
       textColor: showMorseCode ? '#ffffff' : '#cccccc',
@@ -473,7 +473,7 @@ export class Renderer {
     // Word Mode toggle
     const wordModeX = this.width / 2 + toggleWidth / 2 + toggleSpacing;
     this.wordModeButton = { x: wordModeX, y: toggleY, width: toggleWidth, height: toggleHeight };
-    this.drawButton(this.wordModeButton.x, this.wordModeButton.y, this.wordModeButton.width, this.wordModeButton.height, `Word ${wordMode ? 'ON' : 'OFF'}`, {
+    this.drawButton(this.wordModeButton.x, this.wordModeButton.y, this.wordModeButton.width, this.wordModeButton.height, `Woord ${wordMode ? 'AAN' : 'UIT'}`, {
       fill: wordMode ? '#00aa00' : '#444444',
       stroke: wordMode ? '#007700' : '#666666',
       textColor: '#ffffff',
@@ -485,7 +485,7 @@ export class Renderer {
     // Start button
     const startY = toggleY + toggleHeight + 20;
     this.startButton = { x: this.width / 2 - 120, y: startY, width: 240, height: 50 };
-    this.drawButton(this.startButton.x, this.startButton.y, this.startButton.width, this.startButton.height, '🚀 START GAME', {
+    this.drawButton(this.startButton.x, this.startButton.y, this.startButton.width, this.startButton.height, '🚀 START SPEL', {
       fill: '#cc2020',
       stroke: '#8b1414',
       textColor: '#ffffff',
@@ -502,15 +502,15 @@ export class Renderer {
     this.ctx.fillStyle = '#ff0000';
     this.ctx.font = 'bold 48px monospace';
     this.ctx.textAlign = 'center';
-    this.ctx.fillText('GAME OVER', this.width / 2, 200);
+    this.ctx.fillText('SPEL AFGELOPEN', this.width / 2, 200);
 
     this.ctx.fillStyle = '#ffffff';
     this.ctx.font = '24px monospace';
-    this.ctx.fillText(`Final Score: ${score}`, this.width / 2, 280);
-    this.ctx.fillText(`Level Reached: ${level}`, this.width / 2, 320);
+    this.ctx.fillText(`Eindscore: ${score}`, this.width / 2, 280);
+    this.ctx.fillText(`Bereikt niveau: ${level}`, this.width / 2, 320);
 
     this.ctx.fillStyle = '#00ff00';
     this.ctx.font = '20px monospace';
-    this.ctx.fillText('Press ENTER to Restart', this.width / 2, 400);
+    this.ctx.fillText('Druk op ENTER om opnieuw te beginnen', this.width / 2, 400);
   }
 }

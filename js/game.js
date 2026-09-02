@@ -20,7 +20,7 @@ export class Game {
     this.activeInvader = null;
     this.typedBuffer = '';
     this.audioEnabled = true;
-    this.showMorseCode = true; // show/hide morse code display
+    this.showMorseCode = false; // show/hide morse code display
     this.audioEngine = null; // set by GameLoop
     this.newWave = false; // set true when wave starts, cleared by game-loop
     this.player = {
@@ -40,7 +40,7 @@ export class Game {
     this.deathPauseDuration = 60; // frames to pause after death (~1 second)
 
     // Word mode (CW headcopy training)
-    this.wordMode = false; // false = character, true = word
+    this.wordMode = true; // false = character, true = word
     this.selectedWordList = 'default'; // placeholder for future word list selection
 
     // Decorative bullets that invaders fire after finishing morse playback
